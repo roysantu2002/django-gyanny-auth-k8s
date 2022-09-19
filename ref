@@ -1,2 +1,7 @@
 source venv/bin/activate
+source /opt/venv/bin/activate
 
+python -c "import secrets;print(secrets.token_urlsafe(32))
+
+
+docker run --name postgres -it -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres postgres

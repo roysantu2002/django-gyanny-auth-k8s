@@ -5,6 +5,8 @@ from django.db.models import Model
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+
+
 # Create your models here.
 
 # class SampleModel(Model):

@@ -18,12 +18,12 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.environ.get('DEBUG')) == "1"
 
-ENV_ALLOWED_HOST = os.environ.get("ENV_ALLOWED_HOST")
+ENV_ALLOWED_HOST = os.environ.get("ENV_ALLOWED_HOST").split(",")
 # ALLOWED_HOSTS = ['auth-core-app.herokuapp.com', 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = []
 
 if ENV_ALLOWED_HOST:
-    ALLOWED_HOSTS = [ENV_ALLOWED_HOST]
+    ALLOWED_HOSTS = ENV_ALLOWED_HOST
 
 print(ALLOWED_HOSTS)
 
@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'api',
     'accounts',
-    'corsheaders'
+    'corsheaders',
+    'core'
 ]
 
 MIDDLEWARE = [
@@ -91,8 +92,9 @@ DB_USERNAME = os.environ.get('POSTGRES_USER')
 DB_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
 DB_DATABASE = os.environ.get('POSTGRES_DB')
 DB_HOST = os.environ.get('POSTGRES_HOST')
-DB_PORT = os.environ.get('POSTGRES_PORT ')
+DB_PORT = os.environ.get('POSTGRES_PORT')
 
+print(DB_DATABASE, DB_HOST, DB_PASSWORD, DB_PORT, DB_USERNAME)
 DB_IS_AVAIL = all([
     DB_USERNAME,
     DB_PASSWORD,
@@ -101,9 +103,12 @@ DB_IS_AVAIL = all([
     DB_PORT
 ])
 
-POSTGRES_READY = str(os.environ.get('POSTGRES_READY')) == 1
+# POSTGRES_READY = str(os.environ.get('POSTGRES_READY')) == 1
 
-if DB_IS_AVAIL and POSTGRES_READY:
+# if DB_IS_AVAIL and POSTGRES_READY:
+
+print(DB_IS_AVAIL)
+if DB_IS_AVAIL:
      DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -183,7 +188,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom user model
-AUTH_USER_MODEL = "accounts.NewUser"
+AUTH_USER_MODEL = 'accounts.NewUser'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
