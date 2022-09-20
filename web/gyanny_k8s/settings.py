@@ -16,9 +16,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.environ.get('DEBUG')) == "1"
+# DEBUG = str(os.environ.get('DEBUG')) == "1"
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ENV_ALLOWED_HOST = os.environ.get("ENV_ALLOWED_HOST").split(",")
+ENV_ALLOWED_HOST = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 # ALLOWED_HOSTS = ['auth-core-app.herokuapp.com', 'localhost', '127.0.0.1']
 ALLOWED_HOSTS = []
 
@@ -111,7 +112,7 @@ print(DB_IS_AVAIL)
 if DB_IS_AVAIL:
      DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
+            'ENGINE': os.environ.get("SQL_ENGINE"),
             'NAME': DB_DATABASE,
             'HOST': DB_HOST,
             'PORT': DB_PORT,
@@ -188,7 +189,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom user model
-AUTH_USER_MODEL = 'accounts.NewUser'
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),

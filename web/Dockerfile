@@ -1,15 +1,25 @@
+# # Pull base image
+# FROM python:3.9.12-slim
+# pull official base image
+FROM python:3.9.6-alpine
 
-
-FROM python:3.9.12-slim
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+# Set work directory
 COPY . /app
 WORKDIR /app
 
-RUN python3 -m venv /opt/venv
+# install psycopg2 dependencies
+RUN apk update \
+    && apk add postgresql-dev gcc python3-dev musl-dev
 
-RUN /opt/venv/bin/pip install pip --upgrade && \
-    /opt/venv/bin/pip install -r requirements.txt && \
-    chmod +x entrypoint.sh
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-CMD ["/app/entrypoint.sh"]
+RUN sed -i 's/\r$//g' /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# run entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
