@@ -21,5 +21,4 @@ RUN pip install --upgrade pip && \
 RUN sed -i 's/\r$//g' /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-# run entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]

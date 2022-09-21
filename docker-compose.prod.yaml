@@ -11,9 +11,7 @@ services:
       - web/.env
     ports:
       - "8000:8000"
-    command: sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && python manage.py runserver 0.0.0.0:8000"
-    # command: sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && python manage.py runserver 0.0.0.0:8000"
-
+    command: sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && gunicorn --bind=0.0.0.0:8000 gyanny_k8s.wsgi:application"
   db:
     image: postgres:13.0-alpine
     container_name: db
