@@ -20,3 +20,26 @@ docker-compose -f docker-compose.prod.yaml logs -f.
 
 docker-compose exec web python manage.py flush --no-input
 $ docker-compose exec web python manage.py migrate
+
+----------Delete
+
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)
+rm $(docker volume ls -q)
+
+docker-compose restart
+
+
+------------Heroku
+docker build -t web:latest .
+
+docker run -d --name django-auth -e "PORT=8765" -e "DEBUG=1" -p 8007:8765 web:latest
+
+docker build -t web:latest .
+docker build -t registry.heroku.com/django-auth-01/web .
+docker push registry.heroku.com/django-auth-01/web
+heroku container:release -a django-auth-01 web
+heroku run python manage.py migrate -a django-auth-01
+
+heroku pg:killall -a django-auth-01
+

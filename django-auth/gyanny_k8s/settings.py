@@ -5,6 +5,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -88,38 +90,59 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
+#
+# DB_USERNAME = os.environ.get('POSTGRES_USER')
+# DB_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+# DB_DATABASE = os.environ.get('POSTGRES_DB')
+# DB_HOST = os.environ.get('POSTGRES_HOST')
+# DB_PORT = os.environ.get('POSTGRES_PORT')
+#
+# print(DB_DATABASE, DB_HOST, DB_PASSWORD, DB_PORT, DB_USERNAME)
+# DB_IS_AVAIL = all([
+#     DB_USERNAME,
+#     DB_PASSWORD,
+#     DB_DATABASE,
+#     DB_HOST,
+#     DB_PORT
+# ])
+#
+# # POSTGRES_READY = str(os.environ.get('POSTGRES_READY')) == 1
+#
+# # if DB_IS_AVAIL and POSTGRES_READY:
+#
+# print(DB_IS_AVAIL)
+# if DB_IS_AVAIL:
+#      DATABASES = {
+#         'default': {
+#             'ENGINE': os.environ.get("SQL_ENGINE"),
+#             'NAME': DB_DATABASE,
+#             'HOST': DB_HOST,
+#             'PORT': DB_PORT,
+#             'USER': DB_USERNAME,
+#             'PASSWORD': DB_PASSWORD
+#         }
+#     }
 
-DB_USERNAME = os.environ.get('POSTGRES_USER')
-DB_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
-DB_DATABASE = os.environ.get('POSTGRES_DB')
-DB_HOST = os.environ.get('POSTGRES_HOST')
-DB_PORT = os.environ.get('POSTGRES_PORT')
+# print(os.environ.get('DATABASE_URL'))
 
-print(DB_DATABASE, DB_HOST, DB_PASSWORD, DB_PORT, DB_USERNAME)
-DB_IS_AVAIL = all([
-    DB_USERNAME,
-    DB_PASSWORD,
-    DB_DATABASE,
-    DB_HOST,
-    DB_PORT
-])
+if os.environ.get('DATABASE_URL'):
 
-# POSTGRES_READY = str(os.environ.get('POSTGRES_READY')) == 1
+   print('DATABASE_URL')
+   DATABASE_URL = os.environ.get('DATABASE_URL')
+   db_from_env = dj_database_url.config(default=DATABASE_URL, conn_max_age=500, ssl_require=True)
+   DATABASES['default'].update(db_from_env)
+   print('Done')
+#     DATABASE_URL = os.environ.get('DATABASE_URL')
+#     DATABASES = {'default': dj_database_url.parse(DATABASE_URL)}
+#
+#     print('connecting external db')
+#     # DATABASES['default'] = os.environ.get('DATABASE_URL')
+#     DATABASES['default']['CONN_MAX_AGE'] = 500
 
-# if DB_IS_AVAIL and POSTGRES_READY:
+    # db_from_env = dj_database_url.config()
+    # DATABASES['default'].update(db_from_env)
+    # DATABASES['default']['CONN_MAX_AGE'] = 500
 
-print(DB_IS_AVAIL)
-if DB_IS_AVAIL:
-     DATABASES = {
-        'default': {
-            'ENGINE': os.environ.get("SQL_ENGINE"),
-            'NAME': DB_DATABASE,
-            'HOST': DB_HOST,
-            'PORT': DB_PORT,
-            'USER': DB_USERNAME,
-            'PASSWORD': DB_PASSWORD
-        }
-    }
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -171,8 +194,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATIC_URL = '/static/'
+
+STATIC_URL = '/staticfiles/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # STATIC_TMP = os.path.join(BASE_DIR, 'static')
 # STATICFILES_DIRS = (

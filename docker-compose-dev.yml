@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+    nginx:
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./docker/nginx/Dockerfile
+        ports:
+            - 80:80
+        volumes:
+            - static_volume:/staticfiles
+            - ./docker/nginx/development:/etc/nginx/conf.d
+        depends_on:
+            - django-auth
+    django-auth:
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./docker/auth/Dockerfile
+        volumes:
+
+        entrypoint: /app/docker/auth/wsgi-entrypoint.sh
+        volumes:
+            - static_volume:/app/django-auth/staticfiles
+        expose:
+            - 8000
+
+volumes:
+    static_volume: {}

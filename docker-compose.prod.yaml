@@ -6,15 +6,13 @@ services:
     build:
       context: ./web
       dockerfile: Dockerfile
-    container_name: gyanny-auth
     env_file:
       - web/.env
     ports:
       - "8000:8000"
-    command: sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && gunicorn --bind=0.0.0.0:8000 gyanny_k8s.wsgi:application"
+    command: gunicorn --bind=0.0.0.0:8000 gyanny_k8s.wsgi:application
   db:
     image: postgres:13.0-alpine
-    container_name: db
     restart: always
     command: -p 5432
     env_file:
@@ -25,6 +23,17 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+  redis_db:
+    image: redis
+    restart: always
+    expose:
+      - 6388
+    ports:
+      - "6388:6388"
+    volumes:
+        - redis_data:/data
+    entrypoint: redis-server --appendonly yes --port 6388
 
 volumes:
   postgres_data:
+  redis_data:
