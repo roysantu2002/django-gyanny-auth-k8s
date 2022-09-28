@@ -25,6 +25,14 @@ services:
             - static_volume:/app/django-auth/staticfiles
         expose:
             - 8000
+    gyanny:
+        restart: unless-stopped
+        build:
+            context: .
+            dockerfile: ./docker/frontend/Dockerfile
+        expose:
+            - 3000
+
 
 volumes:
     static_volume: {}
